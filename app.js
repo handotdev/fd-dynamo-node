@@ -30,24 +30,24 @@ function scanRFIDBetween(start, end, callback) {
         if (err) {
             console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
         } else {        
-            console.log("Scan succeeded.");
+            // console.log("Scan succeeded.");
             data.Items.forEach(function(itemdata) {
                 result.push(itemdata);
-                console.log("Item :",JSON.stringify(itemdata));
+                // console.log("Item :",JSON.stringify(itemdata));
             });
 
             // continue scanning if we have more items
             if (typeof data.LastEvaluatedKey != "undefined") {
-                console.log("Scanning for more...");
+                // console.log("Scanning for more...");
                 params.ExclusiveStartKey = data.LastEvaluatedKey;
                 docClient.scan(params, onScan);
             } else {
                 let map = {};
                 result.map(scan => {
-                    if (scan.esp in map) {
-                        map[scan.esp]++;
+                    if (scan.cow in map) {
+                        map[scan.cow]++;
                     } else {
-                        map[scan.esp] = 1;
+                        map[scan.cow] = 1;
                     }
                 })
                 callback(map);
@@ -90,18 +90,24 @@ function queryDistanceBetween() {
         //     const interval = timeInterval(scan.time, 0.1, 0.1);
         //     console.log(scanRFIDBetween(interval[0], interval[1]));
         // })
+
+        let results = [];
         const items = data.Items;
+        const every = 25;
+
         items.map((scan, i) => {
-            if (i%100 === 0) {
+            if (i%every === 0) {
                 console.log(i);
-                const interval = timeInterval(scan.time, 60, 60);
+                const interval = timeInterval(scan.time, 2, 2);
                 scanRFIDBetween(interval[0], interval[1], (res) => {
-                    console.log(res);
+                    console.log(`${scan.time} => ${JSON.stringify(res)}`);
+                    results.push(res);
+                    if (items.length/every <= results.length) {
+                        console.log(results.length);
+                    }
                 });
             }
         })
-
-
     })
 }
 
