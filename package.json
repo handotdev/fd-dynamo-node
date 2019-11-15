@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/hanywang2/fd-dynamo-node#readme",
   "dependencies": {
-    "aws-sdk": "^2.571.0"
+    "aws-sdk": "^2.571.0",
+    "date-and-time": "^0.10.0"
   }
 }
